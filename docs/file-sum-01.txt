@@ -1,0 +1,203 @@
+File Summaries:
+src/examples/BirdFlockingExample.js: Sets up and demonstrates a simulation of bird flocks using BirdFlockingBehavior. Includes features like different bird types, foraging, perching on trees, food items, and weather effects (rain). Provides functions to create birds, trees, food, manage weather cycles, and clean up the example.
+Now, let's continue with the next file:
+2. src/examples/EventSystemExample.js
+File Summaries:
+src/examples/BirdFlockingExample.js: Sets up and demonstrates a simulation of bird flocks using BirdFlockingBehavior. Includes features like different bird types, foraging, perching on trees, food items, and weather effects (rain). Provides functions to create birds, trees, food, manage weather cycles, and clean up the example.
+src/examples/EventSystemExample.js: Demonstrates the usage of the global eventSystem. It defines a BunnyTracker class that listens for events (ENTITY_CREATED, BUNNY_DIED, BUNNY_BREED) and a BunnySimulation class that creates Bunny entities and triggers events related to them. It shows how components can communicate without direct references.
+Continuing...
+3. src/examples/FlockingExample.js
+File Summaries:
+src/examples/BirdFlockingExample.js: Sets up and demonstrates a simulation of bird flocks using BirdFlockingBehavior. Includes features like different bird types, foraging, perching on trees, food items, and weather effects (rain). Provides functions to create birds, trees, food, manage weather cycles, and clean up the example.
+src/examples/EventSystemExample.js: Demonstrates the usage of the global eventSystem. It defines a BunnyTracker class that listens for events (ENTITY_CREATED, BUNNY_DIED, BUNNY_BREED) and a BunnySimulation class that creates Bunny entities and triggers events related to them. It shows how components can communicate without direct references.
+src/examples/FlockingExample.js: Demonstrates the standard FlockingBehavior (likely for fish or generic groups). It creates a configurable number of entities (flockSize) that exhibit separation, alignment, and cohesion. It can optionally include a leader entity, wandering behavior, and target following (mouse or random).
+Let's proceed.
+4. src/examples/ComponentExample.js
+File Summaries:
+src/examples/BirdFlockingExample.js: Sets up and demonstrates a simulation of bird flocks using BirdFlockingBehavior. Includes features like different bird types, foraging, perching on trees, food items, and weather effects (rain). Provides functions to create birds, trees, food, manage weather cycles, and clean up the example.
+src/examples/EventSystemExample.js: Demonstrates the usage of the global eventSystem. It defines a BunnyTracker class that listens for events (ENTITY_CREATED, BUNNY_DIED, BUNNY_BREED) and a BunnySimulation class that creates Bunny entities and triggers events related to them. It shows how components can communicate without direct references.
+src/examples/FlockingExample.js: Demonstrates the standard FlockingBehavior (likely for fish or generic groups). It creates a configurable number of entities (flockSize) that exhibit separation, alignment, and cohesion. It can optionally include a leader entity, wandering behavior, and target following (mouse or random).
+src/examples/ComponentExample.js: Showcases the core Entity-Component-System (ECS) architecture. It demonstrates creating entities (Player, Obstacle, Item) and attaching various components (transform, sprite, physics, collision) to define their properties and behavior. Includes setup for a PhysicsSystem, player controls, and basic collision handling (item collection).
+Moving on...
+5. src/examples/index.js
+File Summaries:
+src/examples/BirdFlockingExample.js: Sets up and demonstrates a simulation of bird flocks using BirdFlockingBehavior. Includes features like different bird types, foraging, perching on trees, food items, and weather effects (rain). Provides functions to create birds, trees, food, manage weather cycles, and clean up the example.
+src/examples/EventSystemExample.js: Demonstrates the usage of the global eventSystem. It defines a BunnyTracker class that listens for events (ENTITY_CREATED, BUNNY_DIED, BUNNY_BREED) and a BunnySimulation class that creates Bunny entities and triggers events related to them. It shows how components can communicate without direct references.
+src/examples/FlockingExample.js: Demonstrates the standard FlockingBehavior (likely for fish or generic groups). It creates a configurable number of entities (flockSize) that exhibit separation, alignment, and cohesion. It can optionally include a leader entity, wandering behavior, and target following (mouse or random).
+src/examples/ComponentExample.js: Showcases the core Entity-Component-System (ECS) architecture. It demonstrates creating entities (Player, Obstacle, Item) and attaching various components (transform, sprite, physics, collision) to define their properties and behavior. Includes setup for a PhysicsSystem, player controls, and basic collision handling (item collection).
+src/examples/index.js: Acts as a central hub for the example modules. It imports the initialization functions from the other example files (ComponentExample, BehaviorExample, FlockingExample, etc.) and exports them in a single object. It also provides a helper function getExampleList to retrieve names and IDs of available examples.
+Next...
+6. src/examples/BehaviorExample.js
+File Summaries:
+src/examples/BirdFlockingExample.js: Sets up and demonstrates a simulation of bird flocks using BirdFlockingBehavior. Includes features like different bird types, foraging, perching on trees, food items, and weather effects (rain). Provides functions to create birds, trees, food, manage weather cycles, and clean up the example.
+src/examples/EventSystemExample.js: Demonstrates the usage of the global eventSystem. It defines a BunnyTracker class that listens for events (ENTITY_CREATED, BUNNY_DIED, BUNNY_BREED) and a BunnySimulation class that creates Bunny entities and triggers events related to them. It shows how components can communicate without direct references.
+src/examples/FlockingExample.js: Demonstrates the standard FlockingBehavior (likely for fish or generic groups). It creates a configurable number of entities (flockSize) that exhibit separation, alignment, and cohesion. It can optionally include a leader entity, wandering behavior, and target following (mouse or random).
+src/examples/ComponentExample.js: Showcases the core Entity-Component-System (ECS) architecture. It demonstrates creating entities (Player, Obstacle, Item) and attaching various components (transform, sprite, physics, collision) to define their properties and behavior. Includes setup for a PhysicsSystem, player controls, and basic collision handling (item collection).
+src/examples/index.js: Acts as a central hub for the example modules. It imports the initialization functions from the other example files (ComponentExample, BehaviorExample, FlockingExample, etc.) and exports them in a single object. It also provides a helper function getExampleList to retrieve names and IDs of available examples.
+src/examples/BehaviorExample.js: Demonstrates the use of the BehaviorComponent and state-driven AI. It defines simple behavior classes (WanderBehavior, ChaseBehavior, FleeBehavior) and implements state transitions (e.g., an animal wanders until it detects a target to chase, or flees if it detects a predator). Creates different types of animals (predators, prey) and a player entity to interact with them.
+7. src/examples/BirdBehaviorExample.js
+File Summaries:
+src/examples/BirdFlockingExample.js: Sets up and demonstrates a simulation of bird flocks using BirdFlockingBehavior. Includes features like different bird types, foraging, perching on trees, food items, and weather effects (rain). Provides functions to create birds, trees, food, manage weather cycles, and clean up the example.
+src/examples/EventSystemExample.js: Demonstrates the usage of the global eventSystem. It defines a BunnyTracker class that listens for events (ENTITY_CREATED, BUNNY_DIED, BUNNY_BREED) and a BunnySimulation class that creates Bunny entities and triggers events related to them. It shows how components can communicate without direct references.
+src/examples/FlockingExample.js: Demonstrates the standard FlockingBehavior (likely for fish or generic groups). It creates a configurable number of entities (flockSize) that exhibit separation, alignment, and cohesion. It can optionally include a leader entity, wandering behavior, and target following (mouse or random).
+src/examples/ComponentExample.js: Showcases the core Entity-Component-System (ECS) architecture. It demonstrates creating entities (Player, Obstacle, Item) and attaching various components (transform, sprite, physics, collision) to define their properties and behavior. Includes setup for a PhysicsSystem, player controls, and basic collision handling (item collection).
+src/examples/index.js: Acts as a central hub for the example modules. It imports the initialization functions from the other example files (ComponentExample, BehaviorExample, FlockingExample, etc.) and exports them in a single object. It also provides a helper function getExampleList to retrieve names and IDs of available examples.
+src/examples/BehaviorExample.js: Demonstrates the use of the BehaviorComponent and state-driven AI. It defines simple behavior classes (WanderBehavior, ChaseBehavior, FleeBehavior) and implements state transitions (e.g., an animal wanders until it detects a target to chase, or flees if it detects a predator). Creates different types of animals (predators, prey) and a player entity to interact with them.
+src/examples/BirdBehaviorExample.js: Specifically focuses on bird behaviors using BehaviorComponent and SteeringComponent. It creates birds that can switch between states like flocking, finding a perch, perching, and fleeing from threats (like the player). It manages different flock types and perch locations.
+Now moving into the src/core directory...
+8. src/core/base/Entity.js
+File Summaries:
+... (Previous summaries) ...
+src/examples/BirdBehaviorExample.js: Specifically focuses on bird behaviors using BehaviorComponent and SteeringComponent. It creates birds that can switch between states like flocking, finding a perch, perching, and fleeing from threats (like the player). It manages different flock types and perch locations.
+src/core/base/Entity.js: Defines the fundamental Entity class in the ECS architecture. An entity is primarily a container for components. It manages a unique ID, name, tags, active/visible states, and holds a collection of Component instances. It includes methods for adding, getting, removing, and checking for components. It also supports parent-child relationships and has basic lifecycle methods (initialize, update, draw, destroy). Contains a static registry for component types.
+9. src/core/base/Scene.js
+File Summaries:
+... (Previous summaries) ...
+src/core/base/Entity.js: Defines the fundamental Entity class in the ECS architecture. An entity is primarily a container for components. It manages a unique ID, name, tags, active/visible states, and holds a collection of Component instances. It includes methods for adding, getting, removing, and checking for components. It also supports parent-child relationships and has basic lifecycle methods (initialize, update, draw, destroy). Contains a static registry for component types.
+src/core/base/Scene.js: Defines the Scene class, which acts as a container for Entity objects and System objects. It manages the lifecycle of entities (adding, removing, updating, drawing) and systems. Includes mechanisms for entity lookup (by ID, name, tag), entity sorting (e.g., by Z-index), scene activation/deactivation/pausing, timing (delta time, fixed time step), and basic camera management. Supports static asset preloading and system registration for subclasses. Provides lifecycle hooks (onInitialize, onUpdate, etc.).
+10. src/core/base/Component.js
+File Summaries:
+... (Previous summaries) ...
+src/core/base/Scene.js: Defines the Scene class, which acts as a container for Entity objects and System objects. It manages the lifecycle of entities (adding, removing, updating, drawing) and systems. Includes mechanisms for entity lookup (by ID, name, tag), entity sorting (e.g., by Z-index), scene activation/deactivation/pausing, timing (delta time, fixed time step), and basic camera management. Supports static asset preloading and system registration for subclasses. Provides lifecycle hooks (onInitialize, onUpdate, etc.).
+src/core/base/Component.js: Defines the abstract base Component class. Components are attached to entities and define specific aspects of their data or behavior. This base class provides common properties like type, entity (reference to owner), enabled status, and standard lifecycle methods (init, update, lateUpdate, fixedUpdate, draw, destroy) meant to be overridden by concrete component implementations.
+11. src/core/base/index.js
+File Summaries:
+... (Previous summaries) ...
+src/core/base/Component.js: Defines the abstract base Component class. Components are attached to entities and define specific aspects of their data or behavior. This base class provides common properties like type, entity (reference to owner), enabled status, and standard lifecycle methods (init, update, lateUpdate, fixedUpdate, draw, destroy) meant to be overridden by concrete component implementations.
+src/core/base/index.js: Serves as an index file for the core/base directory. It imports the fundamental classes (Component, Entity, Scene, System) from their respective files and exports them both individually and as properties of a default export object, providing a convenient way to import these core building blocks.
+12. src/core/base/System.js
+File Summaries:
+... (Previous summaries) ...
+src/core/base/index.js: Serves as an index file for the core/base directory. It imports the fundamental classes (Component, Entity, Scene, System) from their respective files and exports them both individually and as properties of a default export object, providing a convenient way to import these core building blocks.
+src/core/base/System.js: Defines the base System class for the ECS architecture. Systems process entities that have a specific set of required components. This base class manages a set of registered entities, enabled status, priority, and provides lifecycle methods (initialize, activate, deactivate, update, fixedUpdate, destroy) and hooks (onEntityAdded, onEntityRemoved, onBeforeUpdate, etc.). Concrete systems inherit from this to implement logic (e.g., PhysicsSystem, RenderSystem).
+13. src/core/Scene.js (Already summarized as #9 - duplicate path, likely same file)
+14. src/core/Game.js
+File Summaries:
+... (Previous summaries) ...
+src/core/base/System.js: Defines the base System class for the ECS architecture. Systems process entities that have a specific set of required components. This base class manages a set of registered entities, enabled status, priority, and provides lifecycle methods (initialize, activate, deactivate, update, fixedUpdate, destroy) and hooks (onEntityAdded, onEntityRemoved, onBeforeUpdate, etc.). Concrete systems inherit from this to implement logic (e.g., PhysicsSystem, RenderSystem).
+src/core/Scene.js: (Duplicate, same as #9)
+src/core/Game.js: The main game engine class. It orchestrates the entire game lifecycle. Responsibilities include:
+Setting up the canvas and rendering context (ctx).
+Managing game state (running, paused, debug).
+Running the main game loop (gameLoop) using requestAnimationFrame.
+Calculating delta time and managing frame rate (FPS).
+Handling scene management (registering, switching, updating, drawing the current scene).
+Initializing and managing core managers like AssetManager and InputManager.
+Providing methods to start, stop, pause, and resume the game.
+Handling window resize events.
+15. src/core/index.js
+File Summaries:
+... (Previous summaries) ...
+src/core/Game.js: The main game engine class. Orchestrates the game lifecycle, manages the canvas, game loop, timing, scene switching, asset loading, and input handling.
+src/core/index.js: Index file for the main core directory. It re-exports the base classes (Component, Entity, Scene, System) from core/base, the Game class, and also the EventSystem and its related exports (eventSystem instance, EventTypes). This provides a single entry point for importing most core engine functionalities.
+16. src/core/AssetManager.js
+File Summaries:
+... (Previous summaries) ...
+src/core/index.js: Index file for the main core directory. Re-exports base classes, Game, and EventSystem.
+src/core/AssetManager.js: Provides functionality for managing game assets. It includes methods to asynchronously load images (loadImage) and audio (loadAudio), returning Promises. It stores loaded assets in Maps (images, audio) accessible via keys using getImage and getAudio. Also includes a simple mechanism for storing and retrieving arbitrary data (setData, getData).
+17. src/core/InputManager.js
+File Summaries:
+... (Previous summaries) ...
+src/core/AssetManager.js: Manages loading and retrieving assets (images, audio, data). Uses Promises for asynchronous loading.
+src/core/InputManager.js: Handles user input from keyboard, mouse, and touch events attached to the game's canvas. It tracks the state of keys (keys Set), mouse buttons (mouseButtons Set), mouse position (mousePosition), and active touch points (touchPositions Map). Provides methods to query the current input state (isKeyPressed, isMouseButtonPressed, getMousePosition, getTouchPositions).
+Now moving into the src/systems directory...
+18. src/systems/EventSystem.js
+File Summaries:
+... (Previous summaries) ...
+src/core/InputManager.js: Handles keyboard, mouse, and touch input, tracking current state and providing query methods.
+src/systems/EventSystem.js: Implements a publish-subscribe event system. It allows different parts of the application to communicate indirectly by emitting named events (emit) and subscribing to them (on, once). Listeners can be removed (off). It defines a set of EventTypes constants for common events (e.g., ENTITY_CREATED, BUNNY_DIED, GAME_PAUSED). Exports a singleton instance eventSystem for global access.
+19. src/systems/WeatherSystem.js
+File Summaries:
+... (Previous summaries) ...
+src/systems/EventSystem.js: Global publish-subscribe event manager with a singleton instance.
+src/systems/WeatherSystem.js: A System that manages weather conditions, specifically transitioning between CLEAR and RAINING states based on configurable intervals and probabilities. When raining, it applies effects like adding water to Lake entities. It also includes a basic visual overlay (a semi-transparent blue div) to indicate rain, although marked for improvement (e.g., particle effects).
+20. src/systems/AudioSystem.js
+File Summaries:
+... (Previous summaries) ...
+src/systems/WeatherSystem.js: Manages weather states (clear, raining) and applies effects like adding water to lakes and showing a visual overlay.
+src/systems/AudioSystem.js: A System responsible for handling audio playback. It seems to use a conceptual audioPlayer wrapper (potentially intended for Web Audio API or a library like Howler.js) to manage sound loading and playback. It interacts with AudioComponent on entities to play sounds based on entity events (spawn, death, eat, state changes) or component configurations (e.g., looping sounds for specific states). Supports one-shot and looping sounds, potentially with spatial positioning based on TransformComponent.
+21. src/systems/RenderSystem.js
+File Summaries:
+... (Previous summaries) ...
+src/systems/AudioSystem.js: Manages audio playback via a conceptual wrapper, triggered by entity events and component states. Supports one-shot and looping sounds, potentially spatialized.
+src/systems/RenderSystem.js: A System responsible for drawing entities onto the canvas. It requires entities to have transform and sprite components. It retrieves the canvas context (ctx) from the Game instance via the Scene. In its render method (likely called by the Scene's draw cycle), it applies camera transformations (translation, scaling based on scene.camera), iterates through sorted, active, visible entities, and calls the draw method of each entity's SpriteComponent.
+22. src/systems/GrassSystem.js
+File Summaries:
+... (Previous summaries) ...
+src/systems/RenderSystem.js: System for drawing entities with transform and sprite components, handling camera transforms and Z-sorting.
+src/systems/GrassSystem.js: A System specifically managing GrassPatch entities. It updates the growth of existing patches, handles visual updates if a patch's density changes, and implements a spreading mechanism where dense patches can spawn new, smaller patches nearby, up to a maximum total number (MAX_GRASS_PATCHES). Includes basic bounds checking for spreading.
+23. src/systems/WindSystem.js
+File Summaries:
+... (Previous summaries) ...
+src/systems/GrassSystem.js: Manages GrassPatch entities, handling growth, visual updates, and spreading.
+src/systems/WindSystem.js: A System that simulates wind events (storms). It cycles through states: CALM, WARNING, and ACTIVE. Storms have a random direction, intensity (which ramps up and down during the storm), and duration (scaled by intensity). It updates a global state (world.setState) with the current wind conditions (windState, windIntensity, windDirection, windVector) and emits events for state changes (windstorm_warning_started, windstorm_started, windstorm_ended).
+24. src/systems/index.js
+File Summaries:
+... (Previous summaries) ...
+src/systems/WindSystem.js: Simulates wind storms, cycling through calm, warning, and active states with varying intensity and direction. Updates global state and emits events.
+src/systems/index.js: Index file for the systems directory. It imports and re-exports PhysicsSystem, RenderSystem, and EventSystem (along with its singleton instance eventSystem and EventTypes). This offers a central point for importing these common systems. Note: It doesn't currently export WeatherSystem, AudioSystem, GrassSystem, or WindSystem.
+25. src/systems/SeasonSystem.js
+File Summaries:
+... (Previous summaries) ...
+src/systems/index.js: Index file exporting common systems (Physics, Render, Event). Does not export all systems in the directory.
+src/systems/SeasonSystem.js: A System that manages the progression through seasons (SPRING, SUMMER, AUTUMN, WINTER). Each season has a configurable length, followed by a transition period. It updates the global state (world.setState) with the current season, whether it's transitioning, and progress values. It emits an event (season_changed) when a new season fully begins.
+26. src/systems/EnvironmentSystem.js
+File Summaries:
+... (Previous summaries) ...
+src/systems/SeasonSystem.js: Manages the progression of seasons (Spring, Summer, Autumn, Winter) with transitions, updating global state and emitting events.
+src/systems/EnvironmentSystem.js: A System that reads the current season state (from SeasonSystem via world.getState) and calculates environment parameters based on it. It defines base parameters (grass growth modifier, temperature, sky color, ground color, snow rate) for each season and interpolates them during transitions. It updates the global state (world.setState) with these calculated values and also manages a groundSnowLevel. Includes placeholders/TODOs for particle effects (snow, leaves) and updating the renderer.
+27. src/systems/PhysicsSystem.js
+File Summaries:
+... (Previous summaries) ...
+src/systems/EnvironmentSystem.js: Reads season state and calculates/interpolates environmental parameters (growth modifier, temp, colors), updating global state. Manages snow level.
+src/systems/PhysicsSystem.js: Handles physics integration and collision detection/resolution. Requires entities to have physics and collision components.
+Applies gravity and drag to entities with PhysicsComponent.
+Uses a spatial grid (spatialGrid) to optimize collision detection by only checking entities in nearby grid cells.
+Supports different collision shapes (SHAPES.CIRCLE, SHAPES.RECTANGLE, SHAPES.POINT).
+Detects collisions between entities based on their shapes and collision layers/masks (collidesWith property in CollisionComponent).
+Resolves collisions by adjusting positions and velocities based on physics properties (mass, restitution, friction).
+Handles both standard collisions and trigger collisions (which detect overlap but don't resolve physically).
+Tracks collision entry (onCollisionEnter) and exit (onCollisionExit) events.
+Includes optional debug drawing for collision shapes.
+This concludes the review of all .js files found under the src directory.
+Summary of JavaScript Files in src:
+Core Engine (src/core):
+Game.js: Main engine class, manages game loop, scenes, input, assets.
+AssetManager.js: Loads and manages images, audio, data.
+InputManager.js: Handles keyboard, mouse, touch input.
+index.js: Exports core classes.
+base/: Contains fundamental ECS classes:
+Entity.js: Base class for game objects, holds components.
+Component.js: Base class for data/behavior units attached to entities.
+Scene.js: Manages entities, systems, camera, scene lifecycle.
+System.js: Base class for processing entities with specific components.
+index.js: Exports base classes.
+Systems (src/systems):
+EventSystem.js: Global publish/subscribe event manager.
+WeatherSystem.js: Simulates weather (clear/rain) and its effects.
+AudioSystem.js: Handles sound loading and playback based on events/components.
+RenderSystem.js: Draws entities with sprites using camera transformations.
+GrassSystem.js: Manages grass patch growth and spreading.
+WindSystem.js: Simulates wind storms with varying intensity/direction.
+SeasonSystem.js: Manages progression through seasons (Spring, Summer, Autumn, Winter).
+EnvironmentSystem.js: Calculates environmental parameters (temp, colors, growth rates) based on season.
+PhysicsSystem.js: Handles physics integration (movement, gravity, drag) and collision detection/resolution using spatial partitioning.
+index.js: Exports common systems (Physics, Render, Event).
+Components (src/components): (Files found but not read yet)
+Contains various component classes defining specific entity data/behavior (e.g., CollisionComponent, WindAffectedComponent, BehaviorComponent, PhysicsComponent, TransformComponent, SpriteComponent, AudioComponent, SteeringComponent, AnimationComponent).
+Entities (src/entities): (Files found but not read yet)
+Contains concrete entity classes representing game objects (e.g., Animal, Lake, Bird, GrassPatch, Player, various specific animals like Bunny, Fox, etc., AnimalFactory).
+Behaviors (src/behaviors): (Files found but not read yet)
+Contains AI/steering behavior classes used by BehaviorComponent or SteeringComponent (e.g., FlockingBehavior, WanderBehavior, BirdFlockingBehavior, FollowBehavior).
+Factories (src/factories): (Files found but not read yet)
+Contains factory classes for creating entities (e.g., EntityFactory, BirdFactory).
+Scenes (src/scenes): (Files found but not read yet)
+Contains specific game scene implementations inheriting from core/base/Scene (e.g., GameScene).
+Examples (src/examples):
+Contains various example scripts demonstrating engine features (ECS, behaviors, flocking, events).
+index.js: Exports and lists available examples.
+Demo (src/demo): (Files found but not read yet)
+Contains demo setups (e.g., EcosystemDemo).
+Root Level (src):
+EcoSEED.js: Potentially the main entry point or a high-level orchestrator for the EcoSEED simulation.
+Game.js: (Duplicate path, likely same as src/core/Game.js).

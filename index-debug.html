@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoSEED - Debug Render Test</title>
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0;
+            overflow: hidden; 
+            background-color: #87CEEB;
+            font-family: Arial, sans-serif;
+        }
+        canvas { 
+            display: block; 
+        }
+        #debugPanel {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 400px;
+            font-size: 12px;
+        }
+        #debugPanel h3 {
+            margin: 0 0 10px 0;
+        }
+        #entityStats {
+            margin-bottom: 10px;
+        }
+        button {
+            background: #4CAF50;
+            border: none;
+            padding: 5px 10px;
+            color: white;
+            margin: 5px;
+            cursor: pointer;
+        }
+        #consoleOutput {
+            height: 200px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.5);
+            padding: 5px;
+            font-family: monospace;
+            font-size: 11px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    
+    <div id="debugPanel">
+        <h3>EcoSEED Debug Panel</h3>
+        <div id="entityStats">Loading...</div>
+        <div>
+            <button id="forceCreateEntities">Force Create Entities</button>
+            <button id="toggleDebug">Toggle Debug</button>
+            <button id="forceRepaint">Force Repaint</button>
+        </div>
+        <div id="consoleOutput"></div>
+    </div>
+    
+    <script type="module">
+        import AssetManager from './src/core/AssetManager.js';
+        import Game from './src/core/Game.js';
+        import SimpleRenderScene from './src/scenes/SimpleRenderScene.js';
+        import GraphicsGenerator from './src/graphics/GraphicsGenerator.js';
+
+        // Console override for debug panel
+        const originalConsoleLog = console.log;
+        const originalConsoleError = console.error;
+        const originalConsoleWarn = console.warn;
+        
+        const debugLog = (message, type = 'log') => {
+            // Call original console method
+            if (type === 'error') originalConsoleError(message);
+            else if (type === 'warn') originalConsoleWarn(message);
+            else originalConsoleLog(message);
+            
+            // Add to debug panel
+            const consoleOutput = document.getElementById('consoleOutput');
+            if (consoleOutput) {
+                const logEntry = document.createElement('div');
+                logEntry.textContent = message;
+                
+                if (type === 'error') logEntry.style.color = '#ff5555';
+                else if (type === 'warn') logEntry.style.color = '#ffaa00';
+                
+                consoleOutput.appendChild(logEntry);
+                consoleOutput.scrollTop = consoleOutput.scrollHeight;
+                
+                // Limit entries
+                while (consoleOutput.childNodes.length > 100) {
+                    consoleOutput.removeChild(consoleOutput.firstChild);
+                }
+            }
+        };
+        
+        console.log = (message) => debugLog(message, 'log');
+        console.error = (message) => debugLog(message, 'error');
+        console.warn = (message) => debugLog(message, 'warn');
+        
+        let game = null;
+        let renderScene = null;
+        
+        // Initialize on DOM load
+        document.addEventListener('DOMContentLoaded', initializeDebugGame);
+        
+        async function initializeDebugGame() {
+            debugLog("Starting debug render...");
+            
+            // Get canvas
+            const canvas = document.getElementById('gameCanvas');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            // Create required objects
+            const assetManager = new AssetManager();
+            
+            // Test GraphicsGenerator
+            const graphicsGenerator = new GraphicsGenerator(assetManager);
+            debugLog("GraphicsGenerator created");
+            debugLog(`GraphicsGenerator registered colors: ${Object.keys(graphicsGenerator.entityColors).join(', ')}`);
+            
+            // Test texture generation
+            try {
+                const testTexture = graphicsGenerator.getOrCreateGeneratedTexture('bee', {width: 32, height: 32});
+                debugLog(`Test texture created: ${testTexture ? 'success' : 'failed'}`);
+                debugLog(`Test texture asset key: ${testTexture?.assetKey}`);
+                debugLog(`Asset manager has texture: ${assetManager.hasAsset(testTexture?.assetKey)}`);
+            } catch (err) {
+                debugLog(`Error generating test texture: ${err.message}`, 'error');
+            }
+            
+            // Create Game instance
+            game = new Game(canvas, {
+                width: canvas.width,
+                height: canvas.height,
+                debug: true  // Start with debug enabled
+            });
+            
+            // Create scene with explicit dependencies
+            renderScene = new SimpleRenderScene({
+                game: game,
+                assetManager: assetManager,
+                graphicsGenerator: graphicsGenerator
+            });
+            
+            // Register scene
+            const sceneName = 'debugRender';
+            game.registerScene(sceneName, renderScene);
+            
+            // Start game with this scene
+            try {
+                await game.start(sceneName);
+                debugLog(`Scene started with ${renderScene.getEntityCount()} entities`);
+                
+                // Debug info
+                debugLog(`Systems: ${renderScene.systems.map(s => s.constructor.name).join(', ')}`);
+                debugLog(`Grass system enabled: ${renderScene.grassSystem?.enabled}`);
+                debugLog(`Render system enabled: ${renderScene.renderSystem?.enabled}`);
+                debugLog(`Camera: ${JSON.stringify(renderScene.camera)}`);
+            } catch (err) {
+                debugLog(`Error starting scene: ${err.message}`, 'error');
+            }
+            
+            // Update entity stats
+            updateEntityStats();
+            
+            // Make globally available for console debugging
+            window.debugGame = game;
+            window.debugScene = renderScene;
+            
+            // Setup button handlers
+            setupDebugButtons();
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                if (game) game.resize(canvas.width, canvas.height);
+            });
+        }
+        
+        function updateEntityStats() {
+            const statsElement = document.getElementById('entityStats');
+            if (!statsElement || !renderScene) return;
+            
+            const entityCount = renderScene.getEntityCount();
+            let statsHtml = `<strong>Entities:</strong> ${entityCount}<br>`;
+            
+            // Add entity breakdown by tag if there are entities
+            if (entityCount > 0 && renderScene.entities) {
+                const beeCount = renderScene.entities.filter(e => e.tag === 'bee').length;
+                const birdCount = renderScene.entities.filter(e => e.tag === 'bird').length;
+                const butterflyCount = renderScene.entities.filter(e => e.tag === 'butterfly').length;
+                const grassCount = renderScene.entities.filter(e => e.tag === 'grass').length;
+                const dragonflyCount = renderScene.entities.filter(e => e.tag === 'dragonfly').length;
+                
+                statsHtml += `- Bees: ${beeCount}<br>`;
+                statsHtml += `- Birds: ${birdCount}<br>`;
+                statsHtml += `- Butterflies: ${butterflyCount}<br>`;
+                statsHtml += `- Dragonflies: ${dragonflyCount}<br>`;
+                statsHtml += `- Grass: ${grassCount}<br>`;
+            }
+            
+            statsHtml += `<strong>FPS:</strong> ${Math.round(game?.timing.fps || 0)}`;
+            
+            statsElement.innerHTML = statsHtml;
+        }
+        
+        function setupDebugButtons() {
+            // Force create entities button
+            document.getElementById('forceCreateEntities').addEventListener('click', () => {
+                if (!renderScene) return;
+                
+                debugLog("Forcing entity creation...");
+                renderScene.createEntities();
+                debugLog(`Entities in scene: ${renderScene.getEntityCount()}`);
+                updateEntityStats();
+            });
+            
+            // Toggle debug button
+            document.getElementById('toggleDebug').addEventListener('click', () => {
+                if (!game) return;
+                
+                game.toggleDebug();
+                debugLog(`Debug mode: ${game.state.debug ? 'ON' : 'OFF'}`);
+            });
+            
+            // Force repaint button
+            document.getElementById('forceRepaint').addEventListener('click', () => {
+                if (!renderScene) return;
+                
+                debugLog("Force repainting scene...");
+                // Draw a test entity directly to verify canvas works
+                const ctx = game.ctx;
+                if (ctx) {
+                    debugLog("Drawing test entity directly on canvas...");
+                    ctx.save();
+                    ctx.fillStyle = 'red';
+                    ctx.beginPath();
+                    ctx.arc(ctx.canvas.width/2, ctx.canvas.height/2, 20, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                    debugLog("Test entity drawn at canvas center");
+                }
+                
+                // Update stats
+                debugLog(`Entities in scene: ${renderScene.getEntityCount()}`);
+                updateEntityStats();
+            });
+            
+            // Update stats periodically
+            setInterval(updateEntityStats, 1000);
+        }
+    </script>
+</body>
+</html> 

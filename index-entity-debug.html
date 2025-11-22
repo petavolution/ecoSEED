@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoSEED - Entity Creation Debug</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #f0f0f0;
+        }
+        #container {
+            display: flex;
+            height: 100vh;
+        }
+        #canvas-container {
+            flex: 1;
+            position: relative;
+        }
+        #gameCanvas {
+            background-color: #87CEEB;
+            display: block;
+        }
+        #debug-panel {
+            width: 400px;
+            background-color: #2d2d2d;
+            padding: 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        #entity-stats {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #333;
+            border-radius: 4px;
+        }
+        #console-output {
+            flex: 1;
+            margin-top: 10px;
+            background-color: #000;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 13px;
+            overflow-y: auto;
+            height: 300px;
+        }
+        .log-entry {
+            margin: 2px 0;
+            word-wrap: break-word;
+        }
+        .error { color: #ff5555; }
+        .warn { color: #ffaa00; }
+        .debug { color: #55ff55; }
+        .control-panel {
+            padding: 10px;
+            background-color: #333;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="canvas-container">
+            <canvas id="gameCanvas"></canvas>
+        </div>
+        <div id="debug-panel">
+            <h2>Entity Debug</h2>
+            
+            <div class="control-panel">
+                <h3>Controls</h3>
+                <button id="init-scene">Initialize Scene</button>
+                <button id="create-entities">Create Entities</button>
+                <button id="check-entities">Check Entities</button>
+                <button id="manual-render">Render Frame</button>
+                <button id="check-queue">Check Entity Queue</button>
+                <button id="clear-console">Clear Console</button>
+            </div>
+            
+            <div id="entity-stats">
+                <h3>Entity Stats</h3>
+                <div id="stats-content">No scene loaded</div>
+            </div>
+            
+            <div id="console-output"></div>
+        </div>
+    </div>
+    
+    <script type="module">
+        import AssetManager from './src/core/AssetManager.js';
+        import Game from './src/core/Game.js';
+        import SimpleRenderScene from './src/scenes/SimpleRenderScene.js';
+        import GraphicsGenerator from './src/graphics/GraphicsGenerator.js';
+        import Entity from './src/core/base/Entity.js';
+        import TransformComponent from './src/components/TransformComponent.js';
+        import GeneratedGraphicsComponent from './src/components/GeneratedGraphicsComponent.js';
+        
+        // Console override
+        const consoleOutput = document.getElementById('console-output');
+        
+        function addLogEntry(message, type = 'log') {
+            const entry = document.createElement('div');
+            entry.classList.add('log-entry');
+            
+            if (type === 'error') entry.classList.add('error');
+            else if (type === 'warn') entry.classList.add('warn');
+            else if (type === 'debug') entry.classList.add('debug');
+            
+            entry.textContent = message;
+            consoleOutput.appendChild(entry);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+            
+            // Keep max 300 entries
+            while (consoleOutput.children.length > 300) {
+                consoleOutput.removeChild(consoleOutput.firstChild);
+            }
+        }
+        
+        // Override console methods
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        
+        console.log = function(message) {
+            originalLog.apply(console, arguments);
+            addLogEntry(message);
+        };
+        
+        console.error = function(message) {
+            originalError.apply(console, arguments);
+            addLogEntry(message, 'error');
+        };
+        
+        console.warn = function(message) {
+            originalWarn.apply(console, arguments);
+            addLogEntry(message, 'warn');
+        };
+        
+        // Debug function to log with green highlight
+        function debugLog(message) {
+            originalLog.apply(console, [message]);
+            addLogEntry(message, 'debug');
+        }
+        
+        // Global variables
+        let game = null;
+        let scene = null;
+        let assetManager = null;
+        let graphicsGenerator = null;
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            setupCanvas();
+            setupEventListeners();
+            debugLog('Entity Debug initialized - press "Initialize Scene" to begin');
+        });
+        
+        function setupCanvas() {
+            const canvas = document.getElementById('gameCanvas');
+            const container = document.getElementById('canvas-container');
+            
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            
+            window.addEventListener('resize', () => {
+                canvas.width = container.clientWidth;
+                canvas.height = container.clientHeight;
+                
+                if (game) {
+                    game.resize(canvas.width, canvas.height);
+                }
+            });
+        }
+        
+        function setupEventListeners() {
+            document.getElementById('init-scene').addEventListener('click', initializeScene);
+            document.getElementById('create-entities').addEventListener('click', createEntities);
+            document.getElementById('check-entities').addEventListener('click', checkEntities);
+            document.getElementById('manual-render').addEventListener('click', renderFrame);
+            document.getElementById('check-queue').addEventListener('click', checkQueue);
+            document.getElementById('clear-console').addEventListener('click', () => {
+                consoleOutput.innerHTML = '';
+            });
+        }
+        
+        async function initializeScene() {
+            debugLog('=== INITIALIZING SCENE ===');
+            
+            const canvas = document.getElementById('gameCanvas');
+            
+            // Create core components
+            assetManager = new AssetManager();
+            debugLog('AssetManager created');
+            
+            graphicsGenerator = new GraphicsGenerator(assetManager);
+            debugLog('GraphicsGenerator created');
+            
+            // Test texture creation
+            try {
+                const testTexture = graphicsGenerator.getOrCreateGeneratedTexture('bee', { width: 32, height: 32 });
+                debugLog(`Test texture created: ${testTexture?.assetKey}`);
+            } catch (err) {
+                console.error(`Error generating test texture: ${err.message}`);
+            }
+            
+            // Create game
+            game = new Game(canvas, {
+                width: canvas.width,
+                height: canvas.height,
+                debug: true
+            });
+            debugLog('Game instance created');
+            
+            // Create scene - use lower entity counts for testing
+            scene = new SimpleRenderScene({
+                game: game,
+                assetManager: assetManager,
+                graphicsGenerator: graphicsGenerator
+            });
+            
+            // Override entity counts for easier testing
+            scene.entityCounts = {
+                grassPatches: 5,
+                bees: 3,
+                birds: 2,
+                butterflies: 2
+            };
+            
+            debugLog('SimpleRenderScene created');
+            
+            // Register scene but don't start game loop yet
+            const sceneName = 'entityDebug';
+            game.registerScene(sceneName, scene);
+            debugLog(`Scene registered with name: ${sceneName}`);
+            
+            // Initialize scene directly instead of through game.start()
+            try {
+                debugLog('Calling scene.initialize() directly');
+                await scene.initialize();
+                debugLog(`Scene initialized: ${scene.initialized}`);
+                debugLog(`Entity count after initialize: ${scene.getEntityCount()}`);
+                updateStats();
+            } catch (err) {
+                console.error(`Error initializing scene: ${err.message}`);
+            }
+        }
+        
+        function createEntities() {
+            if (!scene) {
+                console.error('Scene not initialized. Press "Initialize Scene" first.');
+                return;
+            }
+            
+            debugLog('=== CREATING ENTITIES MANUALLY ===');
+            
+            try {
+                // Force entity creation manually
+                scene.createEntities();
+                
+                // Check entity counts
+                debugLog(`Entity count after createEntities(): ${scene.getEntityCount()}`);
+                updateStats();
+            } catch (err) {
+                console.error(`Error creating entities: ${err.message}`);
+            }
+        }
+        
+        function checkEntities() {
+            if (!scene) {
+                console.error('Scene not initialized. Press "Initialize Scene" first.');
+                return;
+            }
+            
+            debugLog('=== CHECKING ENTITY DETAILS ===');
+            
+            const entityCount = scene.getEntityCount();
+            debugLog(`Total entity count: ${entityCount}`);
+            
+            if (entityCount === 0) {
+                debugLog('No entities found. Try pressing "Create Entities" button.');
+                return;
+            }
+            
+            // Check systems
+            debugLog(`Systems in scene: ${scene.systems.map(s => s.constructor.name).join(', ')}`);
+            
+            // Check for transform and generatedGraphics components
+            const entitiesWithTransform = scene.entities.filter(e => e.hasComponent('transform')).length;
+            const entitiesWithGraphics = scene.entities.filter(e => e.hasComponent('generatedGraphics')).length;
+            
+            debugLog(`Entities with transform component: ${entitiesWithTransform}`);
+            debugLog(`Entities with graphics component: ${entitiesWithGraphics}`);
+            
+            // Detailed check for first 3 entities
+            const samplesToCheck = Math.min(3, entityCount);
+            debugLog(`Detailed check for ${samplesToCheck} entities:`);
+            
+            for (let i = 0; i < samplesToCheck; i++) {
+                const entity = scene.entities[i];
+                const transform = entity.getComponent('transform');
+                const graphics = entity.getComponent('generatedGraphics');
+                
+                debugLog(`Entity ${i}: ${entity.name} (${entity.tag})`);
+                debugLog(`  Transform: ${transform ? `x=${transform.x.toFixed(1)}, y=${transform.y.toFixed(1)}` : 'missing'}`);
+                debugLog(`  Graphics: ${graphics ? `assetKey=${graphics.assetKey}` : 'missing'}`);
+            }
+            
+            // Check if entities are registered with systems
+            if (scene.renderSystem) {
+                const renderSystemEntities = scene.renderSystem.entities ? scene.renderSystem.entities.size : 0;
+                debugLog(`Entities in RenderSystem: ${renderSystemEntities}`);
+            }
+            
+            if (scene.grassSystem) {
+                const grassSystemEntities = scene.grassSystem.entities ? scene.grassSystem.entities.size : 0;
+                debugLog(`Entities in GrassSystem: ${grassSystemEntities}`);
+            }
+            
+            updateStats();
+        }
+        
+        function renderFrame() {
+            if (!game || !scene) {
+                console.error('Scene not initialized. Press "Initialize Scene" first.');
+                return;
+            }
+            
+            debugLog('=== MANUAL RENDER ===');
+            
+            try {
+                // Clear canvas
+                const ctx = game.ctx;
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                
+                // Draw scene
+                scene.draw(ctx);
+                
+                debugLog('Manual render completed');
+            } catch (err) {
+                console.error(`Error rendering frame: ${err.message}`);
+            }
+        }
+        
+        function checkQueue() {
+            if (!scene) {
+                console.error('Scene not initialized. Press "Initialize Scene" first.');
+                return;
+            }
+            
+            debugLog('=== CHECKING ENTITY QUEUE ===');
+            
+            try {
+                debugLog(`Entities in main list: ${scene.entities ? scene.entities.length : 0}`);
+                debugLog(`Entities in queue: ${scene.entitiesToAdd ? scene.entitiesToAdd.length : 0}`);
+                
+                if (scene.entitiesToAdd && scene.entitiesToAdd.length > 0) {
+                    debugLog('First 3 queued entities:');
+                    for (let i = 0; i < Math.min(3, scene.entitiesToAdd.length); i++) {
+                        const entity = scene.entitiesToAdd[i];
+                        debugLog(`  ${i}: ${entity.name} (${entity.tag})`);
+                    }
+                    
+                    debugLog('Processing entity queue manually...');
+                    scene.processEntityQueue();
+                    debugLog(`Entity count after processing: ${scene.getEntityCount()}`);
+                } else {
+                    debugLog('No entities in queue');
+                }
+                
+                updateStats();
+            } catch (err) {
+                console.error(`Error checking queue: ${err.message}`);
+            }
+        }
+        
+        function updateStats() {
+            const statsContent = document.getElementById('stats-content');
+            if (!scene) {
+                statsContent.innerHTML = 'No scene loaded';
+                return;
+            }
+            
+            const entityCount = scene.getEntityCount();
+            let html = `<strong>Total entities:</strong> ${entityCount}<br>`;
+            
+            if (entityCount > 0) {
+                const countByTag = {};
+                scene.entities.forEach(entity => {
+                    countByTag[entity.tag] = (countByTag[entity.tag] || 0) + 1;
+                });
+                
+                html += '<strong>By tag:</strong><br>';
+                for (const [tag, count] of Object.entries(countByTag)) {
+                    html += `- ${tag}: ${count}<br>`;
+                }
+            }
+            
+            html += `<br><strong>Scene state:</strong><br>`;
+            html += `- Initialized: ${scene.initialized ? 'Yes' : 'No'}<br>`;
+            html += `- Active: ${scene.state.active ? 'Yes' : 'No'}<br>`;
+            
+            statsContent.innerHTML = html;
+        }
+    </script>
+</body>
+</html> 

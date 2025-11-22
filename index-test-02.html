@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoSEED - Rendering Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #87CEEB;
+            font-family: Arial, sans-serif;
+        }
+        
+        canvas {
+            display: block;
+        }
+        
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .loading h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .loading p {
+            font-size: 1rem;
+            margin: 0.5rem 0;
+        }
+        
+        .spinner {
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 5px solid white;
+            width: 40px;
+            height: 40px;
+            margin: 1rem auto;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            color: #FF5555;
+            font-weight: bold;
+            padding: 10px;
+            background-color: rgba(255, 0, 0, 0.1);
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="gameCanvas"></canvas>
+    
+    <div id="loading" class="loading">
+        <h1>EcoSEED</h1>
+        <p>Rendering Test</p>
+        <div class="spinner"></div>
+        <p id="loadingText">Initializing ecosystem...</p>
+        <div id="errorMessage" class="error"></div>
+    </div>
+    
+    <script type="module" src="main-test-02.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            // Show loading screen
+            const loading = document.getElementById('loading');
+            const loadingText = document.getElementById('loadingText');
+            
+            // Set up error handling for the module script
+            window.addEventListener('error', (event) => {
+                showError(`Error: ${event.message}`);
+            });
+            
+            // Update loading messages
+            const messages = [
+                'Loading modules...',
+                'Generating textures...',
+                'Creating entities...',
+                'Starting simulation...'
+            ];
+            
+            let messageIndex = 0;
+            const messageInterval = setInterval(() => {
+                if (messageIndex < messages.length) {
+                    loadingText.textContent = messages[messageIndex++];
+                } else {
+                    clearInterval(messageInterval);
+                }
+            }, 500);
+            
+            // Listen for game initialization event
+            document.addEventListener('ecoseedReady', () => {
+                fadeLoadingScreen();
+            });
+            
+            // Timeout to hide loading screen even if game doesn't initialize properly
+            setTimeout(() => {
+                fadeLoadingScreen();
+            }, 5000);
+            
+            function fadeLoadingScreen() {
+                if (loading) {
+                    loading.style.opacity = '0';
+                    loading.style.transition = 'opacity 0.5s ease-in-out';
+                    setTimeout(() => {
+                        loading.style.display = 'none';
+                    }, 500);
+                }
+                
+                clearInterval(messageInterval);
+            }
+            
+            function showError(message) {
+                const errorEl = document.getElementById('errorMessage');
+                if (errorEl) {
+                    errorEl.textContent = message;
+                    errorEl.style.display = 'block';
+                    
+                    // Stop spinner
+                    const spinner = document.querySelector('.spinner');
+                    if (spinner) {
+                        spinner.style.animationPlayState = 'paused';
+                        spinner.style.borderTopColor = '#FF5555';
+                    }
+                    
+                    loadingText.textContent = 'Failed to initialize';
+                }
+            }
+            
+            // Expose showError for use from main-test-02.js
+            window.showError = showError;
+        });
+    </script>
+</body>
+
+</html> 
