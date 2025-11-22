@@ -127,6 +127,7 @@ Players don't prevent change — they build ecosystems resilient enough to absor
 
 ```
 src/
+├── EcoSEED.js             # Main entry point, scene setup
 ├── core/
 │   ├── base/
 │   │   ├── Entity.js      # Component container with lifecycle
@@ -146,9 +147,17 @@ src/
 │   └── ...
 ├── entities/
 │   ├── Animal.js          # Base animal with genetics, needs, states
+│   ├── Omnivore.js        # Diet-specific base class
 │   ├── Bird.js
+│   ├── GrassPatch.js      # Vegetation entity
 │   ├── Lake.js
 │   └── ...
+├── behaviors/
+│   └── BirdFlockingBehavior.js  # Flocking behavior configuration
+├── factories/
+│   └── EntityFactory.js   # Centralized entity creation
+├── graphics/
+│   └── GraphicsGenerator.js  # Procedural graphics generation
 └── systems/
     ├── EventSystem.js     # Pub/sub communication
     ├── PhysicsSystem.js   # Movement, collision detection
@@ -161,21 +170,44 @@ src/
     └── AudioSystem.js
 ```
 
+### Program Execution Flow
+
+```
+index.html
+    └──> main.js (DOMContentLoaded)
+         └──> EcoSEED.initialize(canvas, options)
+              ├──> new Game(canvas)
+              ├──> new EcosystemScene()
+              │    └──> onInitialize()
+              │         ├──> addSystem(RenderSystem)
+              │         ├──> addSystem(PhysicsSystem)
+              │         ├──> addSystem(SeasonSystem)
+              │         ├──> addSystem(WeatherSystem)
+              │         └──> EntityFactory.create() x N
+              ├──> game.registerScene('ecosystem', scene)
+              └──> game.start() -> requestAnimationFrame loop
+```
+
 ### Current Implementation Status
 
 **Completed:**
 - Core ECS framework (Entity, Component, System, Scene)
+- Main entry point (EcoSEED.js) with working program flow
+- Entity factory for centralized creation
+- Procedural graphics generator for fallback visuals
 - Animal base class with genetics and 8-state behavior machine
+- Omnivore diet-specific entity base class
+- GrassPatch vegetation entity
+- Bird flocking behavior system
 - Physics system with spatial grid collision detection
 - Season/weather/wind environment systems
 - Event-driven communication architecture
 - Canvas rendering with camera transforms
 
 **In Progress:**
-- Migration from legacy global arrays to ECS pattern
 - Spectral Resonance Field visualization
 - Audio system integration
-- Additional entity types (plants, more animal species)
+- Additional entity types (more animal species)
 
 **Planned:**
 - Ecological Oscilloscope interface
