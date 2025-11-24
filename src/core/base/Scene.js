@@ -338,7 +338,6 @@ export default class Scene {
    * @param {number} deltaTime - Delta time in seconds
    */
   update(deltaTime) {
-    console.log("Scene.update called");
     if (!this.state.active || this.state.paused) return;
     
     // Scale delta time
@@ -617,7 +616,15 @@ export default class Scene {
   findEntityByName(name) {
     return this.entities.find(entity => entity.name === name) || null;
   }
-  
+
+  /**
+   * Get the total number of entities in the scene
+   * @returns {number} Entity count
+   */
+  getEntityCount() {
+    return this.entities.length;
+  }
+
   /**
    * Sort entities by z-index for proper drawing order
    */
